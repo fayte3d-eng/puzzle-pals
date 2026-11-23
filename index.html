@@ -351,10 +351,36 @@ dialog#vdlg::backdrop{background:rgba(20,10,40,.55)}
   .piece.anim{transition-duration:.15s}
   .card{transition:none}
 }
+
+/* ---- welcome splash: one big tap that also lets the music start ---- */
+#splash{position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;cursor:pointer;
+  padding:calc(24px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
+  background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--card) 55%,transparent),color-mix(in srgb,var(--card) 25%,transparent) 70%);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:opacity .5s ease,transform .5s ease}
+#splash.bye{opacity:0;transform:scale(1.08);pointer-events:none}
+#splash .sp-in{display:flex;flex-direction:column;align-items:center;gap:clamp(14px,3vh,26px);text-align:center;max-width:640px}
+#splash .sp-pcs{width:clamp(150px,34vmin,240px);aspect-ratio:1;position:relative}
+#splash .sp-pcs svg{position:absolute;width:56%;height:56%;filter:drop-shadow(0 6px 10px var(--shadow));animation:spFloat 3.2s ease-in-out infinite}
+#splash .sp-pcs svg:nth-child(1){left:0;top:0;--r:-8deg}
+#splash .sp-pcs svg:nth-child(2){right:0;top:0;--r:7deg;animation-delay:-.8s}
+#splash .sp-pcs svg:nth-child(3){left:0;bottom:0;--r:6deg;animation-delay:-1.6s}
+#splash .sp-pcs svg:nth-child(4){right:0;bottom:0;--r:-6deg;animation-delay:-2.4s}
+@keyframes spFloat{0%,100%{transform:translate(0,0) rotate(var(--r))}50%{transform:translate(0,-9%) rotate(calc(var(--r) * -1))}}
+#splash .logo{cursor:inherit;margin:0}
+#splash .sp-go{display:inline-flex;align-items:center;gap:14px;height:clamp(76px,11vh,92px);padding:0 34px 0 22px;border:0;border-radius:999px;
+  background:var(--green);color:#fff;font-size:clamp(28px,5vw,38px);font-weight:700;letter-spacing:.01em;
+  box-shadow:inset 0 -8px 0 var(--green-d),0 10px 24px var(--shadow);animation:spPulse 1.6s ease-in-out infinite;transition:filter .2s}
+#splash .sp-go svg{width:1.5em;height:1.5em;flex:none}
+@keyframes spPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+@media (hover:hover) and (pointer:fine){#splash .sp-go:hover{filter:brightness(1.08) drop-shadow(0 0 4px var(--halo)) drop-shadow(0 0 14px var(--glow))}}
+#splash .sp-go:active{transform:scale(.95)}
+#splash .sp-hint{margin:0;font-size:18px;font-weight:600;color:var(--muted);padding:4px 14px;border-radius:999px;background:color-mix(in srgb,var(--card) 70%,transparent)}
+@media (prefers-reduced-motion:reduce){#splash .sp-pcs svg,#splash .sp-go{animation:none}#splash{transition:opacity .3s ease}#splash.bye{transform:none}}
 </style>
 </head>
 <body>
 <div id="bgw" aria-hidden="true"><div id="bgImg"></div><canvas id="bgFx"></canvas><div id="bgVeil"></div></div>
+<div id="splash" role="dialog" aria-modal="true" aria-label="Welcome to Puzzle Pals"><div class="sp-in"><div class="sp-pcs" aria-hidden="true"><svg viewBox="-4 -4 108 108" aria-hidden="true"><path fill="#ff9f1c" stroke="rgba(255,255,255,.85)" stroke-width="4" stroke-linejoin="round" d="M14 18h24a12 12 0 1 1 24 0h24v24a12 12 0 1 1 0 24v24H62a12 12 0 1 0-24 0H14V66a12 12 0 1 0 0-24z"/></svg><svg viewBox="-4 -4 108 108" aria-hidden="true"><path fill="#3fa2f0" stroke="rgba(255,255,255,.85)" stroke-width="4" stroke-linejoin="round" d="M14 18h24a12 12 0 1 1 24 0h24v24a12 12 0 1 1 0 24v24H62a12 12 0 1 0-24 0H14V66a12 12 0 1 0 0-24z"/></svg><svg viewBox="-4 -4 108 108" aria-hidden="true"><path fill="#ff6fb1" stroke="rgba(255,255,255,.85)" stroke-width="4" stroke-linejoin="round" d="M14 18h24a12 12 0 1 1 24 0h24v24a12 12 0 1 1 0 24v24H62a12 12 0 1 0-24 0H14V66a12 12 0 1 0 0-24z"/></svg><svg viewBox="-4 -4 108 108" aria-hidden="true"><path fill="#7bd34f" stroke="rgba(255,255,255,.85)" stroke-width="4" stroke-linejoin="round" d="M14 18h24a12 12 0 1 1 24 0h24v24a12 12 0 1 1 0 24v24H62a12 12 0 1 0-24 0H14V66a12 12 0 1 0 0-24z"/></svg></div><h1 class="logo" id="spLogo" aria-label="Puzzle Pals"></h1><button class="sp-go" id="spGo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="rgba(255,255,255,.28)"/><path d="M9.5 7.2v9.6l7.6-4.8z" fill="#fff" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>Tap to play!</button><p class="sp-hint">Turn your sound on</p></div></div>
 <section id="picker" class="screen active" aria-label="Choose a puzzle">
   <div class="pk-tools"><button class="round voice-btn" aria-label="Voice settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H10l-5 4v-4H4z" fill="currentColor" fill-opacity=".3"/><path d="M8 10h.01M12 10h.01M16 10h.01"/></svg></button><button class="round bgc bg-btn" aria-label="Background"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3" fill="currentColor" fill-opacity=".25"/><circle cx="15.5" cy="9" r="2"/><path d="M3.5 17.5l5.5-6 4 4.5 2.5-2.5 5 4.5"/></svg></button><button class="round alt mus-btn" aria-label="Music"></button><button class="round alt snd-btn" aria-label="Sound"></button></div>
   <div class="pk">
@@ -1900,6 +1926,14 @@ function unlock(){UNLOCKED=true;const a=audio();if(a&&a.state!=='running'){try{a
 ['pointerdown','pointerup','touchend','click','keydown'].forEach(t=>addEventListener(t,unlock,true));
 (function tryAutoplay(){try{const a=audio();if(!a)return;const go=()=>{if(a.state==='running'&&!UNLOCKED){UNLOCKED=true;musicStart()}};
   if(a.state==='running')go();else a.resume().then(go).catch(()=>{})}catch(e){}})();
+
+/* welcome splash: its tap unlocks sound (the listeners above run first), then Gracie says hi and the menu appears */
+(function splash(){const sp=$('#splash');if(!sp)return;const t=$('#spLogo');lettered(t,'Puzzle Pals',false);
+  t.querySelectorAll('.w>span').forEach((x,i)=>x.style.setProperty('--i',i));
+  let gone=false;const go=e=>{if(gone)return;gone=true;if(e)e.preventDefault();audio();try{sfx.peek()}catch(_){}
+    setTimeout(()=>speak('hi','Hi friend! Ready to play?'),180);sp.classList.add('bye');
+    setTimeout(()=>{sp.remove();const ls=[...$('#logo').querySelectorAll('.w>span')];ls.forEach((x,i)=>logoHop(x,i*60,true))},500)};
+  sp.addEventListener('click',go);const kd=e=>{if(gone)return removeEventListener('keydown',kd);if(e.key==='Enter'||e.key===' '||e.key==='Escape')go(e)};addEventListener('keydown',kd)})();
 document.addEventListener('visibilitychange',()=>{if(!AC)return;if(document.hidden)AC.suspend();else AC.resume()});
 new ResizeObserver(()=>requestAnimationFrame(()=>layout(false))).observe(stage);
 addEventListener('resize',()=>{if(FW.run)fwResize()});
