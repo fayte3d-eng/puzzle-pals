@@ -1892,8 +1892,14 @@ function logoParty(){audio();const ls=[...$('#logo').querySelectorAll('.w>span')
 $('#logo').addEventListener('click',logoParty);
 $('#logo').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();logoParty()}});
 buildPicker();setMute(S.muted);setMusic(MUS.on);bgStart();
-function unlock(){UNLOCKED=true;audio();musicStart()}
-addEventListener('pointerdown',unlock,true);addEventListener('keydown',unlock,true);
+/* sound may only start after the player interacts: start it on the first tap, click or key anywhere
+   (touch screens only count the finger lifting, so listen for that too), and try straight away on load,
+   which some browsers allow for sites the visitor uses often */
+function unlock(){UNLOCKED=true;const a=audio();if(a&&a.state!=='running'){try{a.resume().catch(()=>{})}catch(e){}}musicStart();
+  if(a&&a.state==='running')['pointerdown','pointerup','touchend','click','keydown'].forEach(t=>removeEventListener(t,unlock,true))}
+['pointerdown','pointerup','touchend','click','keydown'].forEach(t=>addEventListener(t,unlock,true));
+(function tryAutoplay(){try{const a=audio();if(!a)return;const go=()=>{if(a.state==='running'&&!UNLOCKED){UNLOCKED=true;musicStart()}};
+  if(a.state==='running')go();else a.resume().then(go).catch(()=>{})}catch(e){}})();
 document.addEventListener('visibilitychange',()=>{if(!AC)return;if(document.hidden)AC.suspend();else AC.resume()});
 new ResizeObserver(()=>requestAnimationFrame(()=>layout(false))).observe(stage);
 addEventListener('resize',()=>{if(FW.run)fwResize()});
