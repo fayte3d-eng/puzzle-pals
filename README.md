@@ -2,7 +2,7 @@
 
 A cozy jigsaw puzzle game for kids: 122 storybook puzzles across 12 worlds, with Gracie, a friendly recorded voice who cheers, counts and reads along.
 
-**Version 1.1**
+**Version 1.1.2**
 
 ## What's inside
 
